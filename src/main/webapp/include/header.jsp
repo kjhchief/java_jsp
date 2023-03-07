@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <header>
 	<h2>머리글부분</h2>
-	<form action="login" style="text-align: right;" method="post">
+	<form action="<%=application.getContextPath()%>/member/login.jsp" style="text-align: right;" method="post">
 		<label>아이디 : <input type="text" name="id"></label> <label>비밀번호
 			: <input type="password" name="password">
 		</label> <input type="submit" value="로그인">
