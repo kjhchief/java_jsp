@@ -32,8 +32,6 @@ if(cookies != null){
 
 <body>
 	<div id="container">
-	
-	
 		<header>
 			<h2>머리글부분</h2>
 			<%
@@ -64,10 +62,8 @@ if(cookies != null){
 				<li>메뉴3</li>
 			</ul>
 		</nav>
-		
-		
 		<section>
-			<article>내용</article>
+			<article>some.jsp의 내용 부분입니다.</article>
 		</section>
 		<aside>좌우메누</aside>
 		<footer>바닥글</footer>

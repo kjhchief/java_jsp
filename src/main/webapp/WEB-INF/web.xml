@@ -2,11 +2,52 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>java_jsp</display-name>
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
+    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+  
+  <!-- 모든 서블릿(JSP)가 공유하는 초기 파라미터 -->
+  <context-param>
+  	<param-name>uploadPath</param-name>
+  	<param-value>c:/xxx/yyy</param-value>
+  </context-param>
+  
+  <!-- jsp에서 밝생하는 예외 처리 페이지 설정 -->
+  <!--
+  <error-page>
+  <exception-type>java.lang.Exception</exception-type>
+  <location>/error/error_500.jsp</location>
+  </error-page>
+  -->
+  
+  <!-- 오류 코드별 오류 처리 페이지 설정 -->
+  <!--  
+  <error-page>
+  <error-code>400</error-code>
+  <location>/error/error_400.jsp</location>
+  </error-page>
+  
+  <error-page>
+  <error-code>404</error-code>
+  <location>/error/error_404.jsp</location>
+  </error-page>
+  -->
+  
+  <!-- jsp 등록, 파라미터 등록 -->
+  <servlet>
+	<servlet-name>configExample.jsp</servlet-name>
+	<jsp-file>/configExample.jsp</jsp-file>
+	<init-param>
+		<param-name>message</param-name>
+		<param-value>메세지메세지</param-value>
+	</init-param>
+  </servlet>
+  
+  <!-- 등록 후 맵핑 -->
+  <servlet-mapping>
+  	<servlet-name>configExample.jsp</servlet-name>
+  	<url-pattern>/config.do</url-pattern>
+  </servlet-mapping>
+  
+  
 </web-app>
