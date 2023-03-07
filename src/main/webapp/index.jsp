@@ -33,7 +33,6 @@ if(cookies != null){
 <body>
 	<div id="container">
 	
-	
 		<header>
 			<h2>머리글부분</h2>
 			<%
