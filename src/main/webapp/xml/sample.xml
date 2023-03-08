@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<members>
+	<member>
+		<id>bangry</id>
+		<name>김기정</name>
+		<age>30</age>
+	</member>
+	<member>
+		<id>bangry2</id>
+		<name>박기정</name>
+		<age>30</age>
+	</member>
+	
+</members>

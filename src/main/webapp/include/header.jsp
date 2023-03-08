@@ -1,6 +1,10 @@
 <%@ page contentType="text/html; charset=utf-8"%>
+<%
+	String title = request.getParameter("title");
+%>
+
 <header>
-	<h2>머리글부분</h2>
+	<h2><%=title %></h2>
 	<form action="<%=application.getContextPath()%>/member/login.jsp" style="text-align: right;" method="post">
 		<label>아이디 : <input type="text" name="id"></label> <label>비밀번호
 			: <input type="password" name="password">

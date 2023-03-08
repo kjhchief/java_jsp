@@ -16,16 +16,16 @@
 <body>
   <h2>회원 가입 화면</h2>
   <form action="memberRegist.jsp" method="post" > 
+  	<!-- name이 파라미터 이름 -->
     아이디 : <input type="text" name="id" id="id"> <span class="error" id="id-error"></span> <br>
-    비밀번호 : <input type="password" name="passwd"><span class="error" id="pw-error"></span><br>
+    비밀번호 : <input type="password" name="password"><span class="error" id="pw-error"></span><br>
     이름 : <input type="text" name="name"><br>
-    취미 : 게임 <input type="checkbox" name="hobby" value="game">, <!--value는 서버에 보내는 값이다.--> 
-          운동 <input type="checkbox" name="hobby" value="sports"><span class="error" id="hobby-error"></span><br>
+    이메일 : <input type="text" name="email"><br>
+    나이 : <input type="text" name="age"><br>
 
     <input type="submit" value="회원가입">
     <input type="reset" value="취소">
 
-    메시지 : <input type="text" id="comment">
   </form>
 
   <script>

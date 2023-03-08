@@ -1,49 +1,18 @@
+<%@page import="ezen.member.repository.JdbcMemberRepository"%>
+<%@page import="ezen.member.repository.MemberRepository"%>
 <%@ page contentType="text/html; charset=utf-8" %>
 
+<% request.setCharacterEncoding("utf-8"); %>
+
+<!-- 위의 작업을 액션 태그 활용하여 -->
+<jsp:useBean id="member" class="ezen.member.entity.Member" scope="request"/>
+<jsp:setProperty property="*" name="member"/>
+
 <%
-// 입력데이터 수신
-request.setCharacterEncoding("utf-8");
-String id = request.getParameter("id");
-String passwd = request.getParameter("passwd");
-String name = request.getParameter("name");
-String[] hobbys= request.getParameterValues("hobby");
-
-// 수신한 데이터 DB회원 테이블에 입력 후
-// 가입 결과를 보여주는 페이지로 이동(위임)
-// ServletContext application = request.getServletContext(); 이렇게 만들어져 있음.
-request.setAttribute("id", id);
-request.setAttribute("name", name);
-RequestDispatcher rd = application.getRequestDispatcher("/member/memberResult.jsp"); // 디스패쳐는 상대경로 못 씀.
-rd.forward(request, response); //여기의 request 안에 위에 셋어트리뷰트에서 넣은 id랑 name이 들어있다.
-
-
-%>
-<%-- 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title></title>
-</head>
-<body>
-
-아이디: <%= id %><br>
-비밀번호: <%= passwd %><br>
-이름: <%=name %><br>
-취미: 
-<%
-if (hobbys != null) {
-	for (String hobby : hobbys) {
-%>
-	<%= hobby %>
-<%	
-	}
-}
+// 회원 테이블에 등록
+MemberRepository repository = new JdbcMemberRepository();
+repository.create(member);
 %>
 
-
-
-
-</body>
-</html>
---%>
+<!-- 자바 코드를 사용하지 않고 웹 컨테이너가 지원하는 액션태그 사용 -->
+<jsp:forward page="/member/memberResult.jsp"/>
