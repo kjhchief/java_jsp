@@ -1,3 +1,4 @@
+<%@page import="ezen.common.factory.DaoFactory"%>
 <%@page import="ezen.member.repository.JdbcMemberRepository"%>
 <%@page import="ezen.member.repository.MemberRepository"%>
 <%@ page contentType="text/html; charset=utf-8" %>
@@ -10,9 +11,11 @@
 
 <%
 // 회원 테이블에 등록
-MemberRepository repository = new JdbcMemberRepository();
+// MemberRepository repository = new JdbcMemberRepository();
+MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
 repository.create(member);
 %>
 
 <!-- 자바 코드를 사용하지 않고 웹 컨테이너가 지원하는 액션태그 사용 -->
 <jsp:forward page="/member/memberResult.jsp"/>
+<%-- <jsp:forward page="/member/memberDetail.jsp"/> --%>

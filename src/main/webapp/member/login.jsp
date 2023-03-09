@@ -1,3 +1,4 @@
+<%@page import="ezen.common.factory.DaoFactory"%>
 <%@page import="ezen.member.entity.Member"%>
 <%@page import="ezen.member.repository.JdbcMemberRepository"%>
 <%@page import="ezen.member.repository.MemberRepository"%>
@@ -10,8 +11,10 @@
 String saveId = request.getParameter("saveid");
 
 // DB 연동
-MemberRepository repository = new JdbcMemberRepository();
+// MemberRepository repository = new JdbcMemberRepository();
+MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
 Member loginMember = repository.isMember(member);
+
 // 회원인 경우
 if (loginMember != null) {
 	// 쿠키를 이용한 로그인 처리

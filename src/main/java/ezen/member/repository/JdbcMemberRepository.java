@@ -1,36 +1,35 @@
 package ezen.member.repository;
 
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import ezen.common.factory.DaoFactory;
 import ezen.member.entity.Member;
 
 public class JdbcMemberRepository implements MemberRepository {
-	// DB 연결정보 상수
-	private static final String driver = "oracle.jdbc.driver.OracleDriver";
-	private static final String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String user = "hr";
-	private static final String password = "hr";
 
-	private Connection con;
-
-	public JdbcMemberRepository() throws ClassNotFoundException, SQLException {
-		Class.forName(driver);
-		con = DriverManager.getConnection(url, user, password);
+	private DataSource dataSource;
+	
+	public JdbcMemberRepository(DataSource dataSource){
+		this.dataSource = dataSource; 
 	}
 
 	@Override
 	public void create(Member member) throws SQLException {
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(" INSERT INTO member").append(" VALUES(?, ?, ?, ?, ?, SYSDATE)");
 		try {
+			// 커넥션을 풀링하고 있는 커넥션 팩토리로부터 사용하지 않고 있는 커넥션 획득
+			con = dataSource.getConnection();
 			con.setAutoCommit(false);
 			pstmt = con.prepareStatement(sb.toString());
 			pstmt.setString(1, member.getId());
@@ -44,8 +43,9 @@ public class JdbcMemberRepository implements MemberRepository {
 			con.rollback();
 		} finally {
 			try {
-				if (pstmt != null)
-					pstmt.close();
+				if (pstmt != null) pstmt.close();
+				// 사용 후 커넥션 반납 (닫는 것 아님. 반납임!)
+				if(con == null) con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -57,6 +57,7 @@ public class JdbcMemberRepository implements MemberRepository {
 	@Override
 	public Member isMember(Member member) throws SQLException {
 		Member loginMember = null;
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder();
@@ -64,6 +65,7 @@ public class JdbcMemberRepository implements MemberRepository {
 		.append(" FROM member")
 		.append(" WHERE member_id=? AND password =?");
 		try {
+			con = dataSource.getConnection();
 			pstmt = con.prepareStatement(sb.toString());
 			pstmt.setString(1, member.getId());
 			pstmt.setString(2, member.getPassword());
@@ -77,10 +79,9 @@ public class JdbcMemberRepository implements MemberRepository {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if(con == null) con.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -92,6 +93,8 @@ public class JdbcMemberRepository implements MemberRepository {
 	@Override
 	public List<Member> findAll() throws SQLException {
 		List<Member> list = new ArrayList<>();
+		
+		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
@@ -101,6 +104,7 @@ public class JdbcMemberRepository implements MemberRepository {
 		.append(" ORDER BY regdate DESC");
 
 		try {
+			con = dataSource.getConnection();
 			pstmt = con.prepareStatement(sb.toString());
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -112,15 +116,54 @@ public class JdbcMemberRepository implements MemberRepository {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if(con == null) con.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		return list;
+	}
+	// 회원 상세 정보
+	public Member getMember(String userId) throws SQLException {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append(" SELECT member_id, name, email, age, regdate")
+		.append(" FROM member")
+		.append(" WHERE member_id=?");
+		
+		
+		con = dataSource.getConnection();
+		pstmt = con.prepareStatement(sb.toString());
+		pstmt.setString(1, userId);
+		rs = pstmt.executeQuery();
+		
+		String id = null;
+		String name = null;
+		String email = null;
+		int age = 0;
+		Date regDate = null;
+		
+		if (rs.next()) {
+			id = rs.getString("member_id");
+			name = rs.getString("name");
+			email = rs.getString("email");
+			age = rs.getInt("age");
+			regDate = rs.getDate("regdate");
+		}
+		
+		Member member = new Member();
+		member.setId(id);
+		member.setName(name);
+		member.setEmail(email);
+		member.setAge(age);
+		member.setRegdate(regDate);
+		
+		return member;
+		
 	}
 
 	// 헬퍼 메소드
@@ -133,13 +176,14 @@ public class JdbcMemberRepository implements MemberRepository {
 		member.setRegdate(rs.getDate("regdate"));
 		return member;
 	}
-
+	
 	// 테스트를 위한 임시 main
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		MemberRepository repository = new JdbcMemberRepository();
+//		MemberRepository repository = new JdbcMemberRepository();
+		MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
 		Member member = new Member();
 		member.setId("kjh");
-		member.setPassword("111111");
+		member.setPassword("1111");
 		Member loginMember = repository.isMember(member);
 		// 비회원인 경우
 		if (loginMember == null) {
@@ -151,6 +195,15 @@ public class JdbcMemberRepository implements MemberRepository {
 		// 전체목록 조회
 		List<Member> list = repository.findAll();
 		System.out.println(list);
+		
+		// 특정 회원 정보 조회
+		Member member2 = ((JdbcMemberRepository) repository).getMember("lolokoko");
+		System.out.println(member2);
+		
+		
+		
+		
+		
 
 	}
 
