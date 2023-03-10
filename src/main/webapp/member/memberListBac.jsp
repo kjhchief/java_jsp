@@ -4,12 +4,19 @@
 <%@page import="ezen.member.repository.JdbcMemberRepository"%>
 <%@page import="ezen.member.repository.MemberRepository"%>
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
+// 비지니스 객체 생성 및 사용
+// MemberService memberService = new MemberServiceImple();
+// List<Member> list = memberService.getMembers();
+
+// 편의상 비즈니스 객체는 생략하고 JSP에서 DAO 객체 사용
+// MemberRepository를 이용한 DB연동
+// MemberDao dao = new JdbcMemberDao();
+// MemberRepository repository = new JdbcMemberRepository();
 MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
+
 List<Member> list = repository.findAll();
-pageContext.setAttribute("list", list); // 페이지 컨텍스트에 저장해야함.
 %>
 
 <!DOCTYPE html>
@@ -53,16 +60,19 @@ pageContext.setAttribute("list", list); // 페이지 컨텍스트에 저장해�
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="member" items="${list }">
-						<tr>
-							<td><a href="memberDetail.jsp?id=${member.id }">${member.id }</a></td>
-							<td>${member.name }</td>
-							<td><a href="mailto:${member.email }">${member.email }</a></td>
-							<td>${member.age}</td>
-							<td>${member.regdate}</td>
-						</tr>
-					</c:forEach>
-					
+					<%
+					for (Member member : list) {
+					%>
+					<tr>
+						<td><a href="memberDetail.jsp?id=<%=member.getId()%>"><%=member.getId()%></a></td>
+						<td><%=member.getName()%></td>
+						<td><a href="mailto:bangry@gmail.com"><%=member.getEmail()%></a></td>
+						<td><%=member.getAge()%></td>
+						<td><%=member.getRegdate()%></td>
+					</tr>
+					<%
+					}
+					%>
 				</tbody>
 			</table>
 		</div>

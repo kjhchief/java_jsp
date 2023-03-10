@@ -3,13 +3,10 @@
 <%@page import="ezen.member.repository.JdbcMemberRepository"%>
 <%@page import="ezen.member.repository.MemberRepository"%>
 <%@ page contentType="text/html; charset=utf-8"%>
-<jsp:useBean id="member" class="ezen.member.entity.Member"
-	scope="request" />
+<jsp:useBean id="member" class="ezen.member.entity.Member" scope="request" />
 <jsp:setProperty property="*" name="member" />
-
 <%
 String saveId = request.getParameter("saveid");
-
 // DB 연동
 // MemberRepository repository = new JdbcMemberRepository();
 MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
@@ -30,7 +27,7 @@ if (loginMember != null) {
 	}
 	response.sendRedirect(application.getContextPath() + "/index.jsp");
 } else { // 회원이 아닌 경우
-	//로그인 화면으로 이동 시킴
+		 //로그인 화면으로 이동 시킴
 %>
 	<p style="color: red">
 	아이디 혹은 비밀번호를 잘못 입력했습니다. <br>

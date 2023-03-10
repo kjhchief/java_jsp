@@ -1,22 +1,24 @@
-<%@page import="ezen.common.factory.DaoFactory"%>
 <%@page import="ezen.member.entity.Member"%>
 <%@page import="java.util.List"%>
-<%@page import="ezen.member.repository.JdbcMemberRepository"%>
 <%@page import="ezen.member.repository.MemberRepository"%>
+<%@page import="ezen.common.factory.DaoFactory"%>
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<%-- <c:set var="score" value="99" scope="page"/> --%>
 
 <%
 MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
 List<Member> list = repository.findAll();
-pageContext.setAttribute("list", list); // 페이지 컨텍스트에 저장해야함.
+pageContext.setAttribute("list", list);
 %>
+<%-- <c:set var="list" value="${list }"/> --%>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
-<title>회원 목록</title>
+<title></title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -31,6 +33,17 @@ pageContext.setAttribute("list", list); // 페이지 컨텍스트에 저장해�
 </style>
 </head>
 <body>
+	<h1>JSTL을 이용하여 구구단 출력</h1>
+	<table border="1" style="background-color: orange">
+		<c:forEach var="i" begin="2" end="9" step="2">
+			<tr>
+				<c:forEach var="j" begin="1" end="9">
+					<td>${i}*${j} = ${i*j}</td>
+				</c:forEach>
+			</tr>
+		</c:forEach>
+	</table>
+
 	<div class="container">
 		<div class="py-5 text-center">
 			<h2>회원 목록</h2>
@@ -45,6 +58,7 @@ pageContext.setAttribute("list", list); // 페이지 컨텍스트에 저장해�
 			<table class="table">
 				<thead>
 					<tr>
+						<th>번호</th>
 						<th>아이디</th>
 						<th>이름</th>
 						<th>이메일</th>
@@ -53,24 +67,29 @@ pageContext.setAttribute("list", list); // 페이지 컨텍스트에 저장해�
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="member" items="${list }">
+				<c:url var="view" value="/jstl/jstlView.jsp">
+					<c:param name="name" value="김재훈"/>
+					<c:param name="id" value="bangry"/>
+				</c:url>
+				
+					<c:forEach var="member" items="${list }" varStatus="loopInfo">
 						<tr>
-							<td><a href="memberDetail.jsp?id=${member.id }">${member.id }</a></td>
+							<td>${loopInfo.count}</td>
+							<td><a href="${view}">${member.id }</a></td>
 							<td>${member.name }</td>
 							<td><a href="mailto:${member.email }">${member.email }</a></td>
-							<td>${member.age}</td>
-							<td>${member.regdate}</td>
+							<td>${member.age }</td>
+							<td>${member.regdate }</td>
 						</tr>
 					</c:forEach>
-					
+
+
+
+
 				</tbody>
 			</table>
 		</div>
 	</div>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-		crossorigin="anonymous"></script>
 
 </body>
 </html>

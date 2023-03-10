@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 // 세션 삭제 후
 //session.invalidate();
@@ -17,3 +18,4 @@ if(cookies != null){
 // index.jsp 자동 요청 처리
 response.sendRedirect(application.getContextPath()+"/index.jsp");
 %>
+<%-- <c:redirect url="/index.jsp"/> --%>

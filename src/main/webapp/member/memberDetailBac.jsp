@@ -5,13 +5,20 @@
 <%@page import="java.util.List"%>
 <%@page import="ezen.member.repository.JdbcMemberRepository"%>
 <%@page import="ezen.member.repository.MemberRepository"%>
+<%-- <jsp:useBean id="member" class="ezen.member.entity.Member" scope="request" /> --%>
+<%-- <jsp:setProperty property="*" name="member" /> --%>
 <%
 MemberRepository repository = DaoFactory.getInstance().getMemberRepository();
 String idd = request.getParameter("id");
 Member member = repository.getMember(idd);
-pageContext.setAttribute("member", member); 
-%>
 
+String memberId = member.getId();
+String memberName = member.getName();
+String memberEmail = member.getEmail();
+Date memberRegdate = member.getRegdate();
+
+System.out.println(member);
+%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -41,20 +48,20 @@ pageContext.setAttribute("member", member);
     </div>
     <div>
       <label for="id">아이디</label> <input type="text" id="id"
-        name="id" class="form-control" value='${member.id }' readonly>
+        name="id" class="form-control" value='<%=memberId%>' readonly>
         
     </div>
     <div>
       <label for="name">이름</label> <input type="text" id="name"
-        name="name" class="form-control" value='${member.name }' readonly>
+        name="name" class="form-control" value='<%=memberName %>' readonly>
     </div>
     <div>
       <label for="email">이메일</label> <input type="text" id="email"
-        name="email" class="form-control" value='${member.email }' readonly>
+        name="email" class="form-control" value='<%=memberEmail %>' readonly>
     </div>
     <div>
       <label for="regdate">가입일자</label> <input type="text" id="regdate"
-        name="regdate" class="form-control" value='${member.regdate }' readonly>
+        name="regdate" class="form-control" value='<%=memberRegdate %>' readonly>
     </div>
     <hr class="my-4">
     <div class="row">
